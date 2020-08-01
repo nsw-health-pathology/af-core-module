@@ -1,6 +1,6 @@
 {
   "name": "@nswhp/af-core-module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -11,7 +11,9 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "lint-fix": "npm run lint -- --fix",
     "ci": "npm run lint && npm run cover && npm run build",
-    "cover": "cross-env NODE_ENV=test nyc --report lcovonly _mocha --config .mocharc.json 'test/**/*.spec.ts'"
+    "cover": "cross-env NODE_ENV=test nyc --report lcovonly _mocha --config .mocharc.json 'test/**/*.spec.ts'",
+    "prepare": "npm run build",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,9 @@
   "bugs": {
     "url": "https://github.com/nsw-health-pathology/af-core-module/issues"
   },
+  "files": [
+    "dist/**/*"
+  ],
   "homepage": "https://github.com/nsw-health-pathology/af-core-module#readme",
   "devDependencies": {
     "@azure/functions": "^1.2.2",

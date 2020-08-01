@@ -48,8 +48,5 @@ __pycache__/
 .nyc_output/
 coverage/
 
-SECRETS.tfvars
-terraform.tfvars
-terraform.plan
-example-bamboo-vars.sh
 *.zip
+*.tgz
