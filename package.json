@@ -1,6 +1,6 @@
 {
   "name": "@nswhp/af-core-module",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "test:watch": "npm run test -- --watch-extensions ts --watch",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "lint-fix": "npm run lint -- --fix",
-    "ci": "npm run lint && npm run cover",
+    "ci": "npm run lint && npm run cover && npm run build",
     "cover": "cross-env NODE_ENV=test nyc --report lcovonly _mocha --config .mocharc.json 'test/**/*.spec.ts'"
   },
   "repository": {
