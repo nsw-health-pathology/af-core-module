@@ -1,5 +1,5 @@
 import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import * as HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 import { AbstractHttpDataService } from '../abstract/abstract-http-data-service';
 import { IApiResponse } from '../models/api-response';
@@ -106,7 +106,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
           message: e.message,
           data: e.response?.data || 'API Call Failed. ' + e.message
         },
-        status: e.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
+        status: e.response?.status || StatusCodes.INTERNAL_SERVER_ERROR,
         headers: e.response?.headers as IHeaders
       };
 
