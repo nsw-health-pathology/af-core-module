@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import 'mocha';
 
-import { BadRequestError } from '../../src/models/errors';
+import { BadRequestError } from '../../../src/models/errors';
 
 describe('BadRequestError', () => {
   it('should return 400 for status code', async () => {

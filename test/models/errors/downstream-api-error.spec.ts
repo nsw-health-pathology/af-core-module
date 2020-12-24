@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { } from 'mocha';
 
-import { IApiResponse } from '../../src/models';
-import { BadRequestError, DownstreamApiError } from '../../src/models/errors';
+import { IApiResponse } from '../../../src/models';
+import { BadRequestError, DownstreamApiError } from '../../../src/models/errors';
 
 describe('DownstreamApiError', () => {
   it('should return downstream status code and error', async () => {

@@ -3,9 +3,50 @@ import 'mocha';
 
 import {
   azureFunctionResponseFromApiError,
+  isInstanceOfApiError,
   responsePayloadFromApiError,
   IApiError,
-} from '../../src/models/errors';
+} from '../../../src/models/errors';
+
+describe('isInstanceOfApiError', () => {
+  it('should return true if the model looks to be of type IAPiError', async () => {
+
+    // Model must have status, title, and type to be considered an IApiError
+
+    const err: IApiError = {
+      name: 'Internal Server Error',
+      message: 'Cannot read property billingDetails of undefined',
+      statusCode: 500,
+      title: 'Internal Server Error',
+      type: 'https://httpstatuses.com/500',
+    };
+
+    const isApiError = isInstanceOfApiError(err);
+    expect(isApiError).to.be.equal(true);
+  });
+
+  it('should return false if the model does not look to be of type IAPiError', async () => {
+
+    // Model must have status, title, and type to be considered an IApiError
+
+    const err = {
+      name: 'Internal Server Error',
+      message: 'Cannot read property billingDetails of undefined',
+      // statusCode: 500,
+      title: 'Internal Server Error',
+      type: 'https://httpstatuses.com/500',
+    };
+
+    const isApiError = isInstanceOfApiError(err);
+    expect(isApiError).to.be.equal(false);
+  });
+
+  it('should return false if the model does not look to be of type IAPiError', async () => {
+    const isApiError = isInstanceOfApiError(new Error('The milks gone bad!'));
+    expect(isApiError).to.be.equal(false);
+  });
+});
+
 
 describe('responsePayloadFromApiError', () => {
   it('should generate the model for the Api Error payload', async () => {
