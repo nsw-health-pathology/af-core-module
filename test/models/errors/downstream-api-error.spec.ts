@@ -1,17 +1,17 @@
 import { expect } from 'chai';
-import * as HttpStatus from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { } from 'mocha';
 
-import { IApiResponse } from '../../src/models';
-import { BadRequestError, DownstreamApiError } from '../../src/models/errors';
+import { IApiResponse } from '../../../src/models';
+import { BadRequestError, DownstreamApiError } from '../../../src/models/errors';
 
 describe('DownstreamApiError', () => {
   it('should return downstream status code and error', async () => {
 
     const response: IApiResponse<BadRequestError> = {
-      status: HttpStatus.UNAUTHORIZED,
+      status: StatusCodes.UNAUTHORIZED,
       body: {
-        statusCode: HttpStatus.UNAUTHORIZED,
+        statusCode: StatusCodes.UNAUTHORIZED,
         name: 'BAD REQUEST',
         title: 'BAD REQUEST',
         type: 'https://httpstatuses.com/400',
@@ -21,7 +21,7 @@ describe('DownstreamApiError', () => {
 
     const err = new DownstreamApiError(response);
 
-    expect(err.statusCode).to.be.equal(HttpStatus.UNAUTHORIZED);
+    expect(err.statusCode).to.be.equal(StatusCodes.UNAUTHORIZED);
     expect(err.type).to.be.equal('https://httpstatuses.com/401');
     expect(err.title).to.be.equal('DOWNSTREAM_API_ERROR');
     expect(err.message).to.be.equal('An error occurred in a downstream request. See additionalInformation for more details');

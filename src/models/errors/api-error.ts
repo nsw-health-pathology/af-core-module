@@ -1,4 +1,4 @@
-import { IAzureFunctionResponse } from './../azure-function-response';
+import { IHttpResponse } from './../azure-function-response';
 import { IHttpErrorResponse } from './http-error-response';
 
 /** Determines if error object is an instance of an Api Error */
@@ -25,7 +25,7 @@ export const responsePayloadFromApiError = (error: IApiError): IHttpErrorRespons
   additionalInformation: error.additionalInformation
 });
 
-export const azureFunctionResponseFromApiError = (error: IApiError): IAzureFunctionResponse<IHttpErrorResponse> => ({
+export const azureFunctionResponseFromApiError = (error: IApiError): IHttpResponse<IHttpErrorResponse> => ({
   body: responsePayloadFromApiError(error),
   headers: {
     'Content-Type': 'application/json'
