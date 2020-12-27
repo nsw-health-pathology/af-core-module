@@ -10,11 +10,11 @@ export interface IHttpResponse<T> {
 
 export const azureFunctionHttpResponseFromApiResponse = <T>(response: IApiResponse<T>): IHttpResponse<T> => {
 
+  const defaultContentType = (response.body instanceof String || typeof response.body === 'string') ? 'text/plain' : 'application/json';
+
   // Default headers to be a JSON response. If the client has specified different headers,
   // then allow this to overwrite in the header
-  let headers: IHeaders = {
-    'Content-Type': 'application/json'
-  };
+  let headers: IHeaders = { 'Content-Type': defaultContentType };
 
   headers = { ...headers, ...response.headers };
 

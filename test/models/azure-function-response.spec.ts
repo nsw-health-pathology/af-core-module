@@ -39,4 +39,18 @@ describe('azureFunctionHttpResponseFromApiResponse', () => {
     expect(payload.headers).to.be.deep.equal(response.headers);
   });
 
+  it('should default to text/plain for string response', async () => {
+
+    const response: IApiResponse<string> = {
+      body: 'Hello World!',
+      status: StatusCodes.OK,
+    };
+
+    const payload = azureFunctionHttpResponseFromApiResponse(response);
+    expect(payload.status).to.be.equal(response.status);
+    expect(payload.body).to.be.deep.equal(response.body);
+    expect(payload.headers).to.be.deep.equal({ 'Content-Type': 'text/plain' });
+  });
+
+
 });
