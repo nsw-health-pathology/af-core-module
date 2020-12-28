@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
+
 import { IApiError } from './api-error';
 
 /** Represents a generic RESTful API error */

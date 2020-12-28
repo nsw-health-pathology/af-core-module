@@ -1,9 +1,8 @@
 import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCodes } from 'http-status-codes';
 
-import { AbstractHttpDataService } from '../abstract/abstract-http-data-service';
-import { IApiResponse } from '../models/api-response';
-import { IHeaders } from '../models/http-headers';
+import { AbstractHttpDataService } from '../abstract';
+import { IHeaders, IApiResponse, IQueryParams } from '../models';
 
 /**
  * HTTP Service class for calling external API services
@@ -20,7 +19,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
   async makeHttpGetCall<K>(
     url: string,
     headers: IHeaders = {},
-    queryParams: unknown = {}
+    queryParams: IQueryParams = {}
   ): Promise<IApiResponse<K>> {
 
     const getCall = (innerUrl: string, requestConfig: AxiosRequestConfig) => {
@@ -56,7 +55,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     url: string,
     payload: T,
     headers: IHeaders = {},
-    queryParams: unknown = {}
+    queryParams: IQueryParams = {}
   ): Promise<IApiResponse<K>> {
 
     const postCall = (innerUrl: string, requestConfig: AxiosRequestConfig) => {
@@ -80,7 +79,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
    */
   private async axiosHttpCall<K>(
     url: string,
-    queryParams: unknown, headers: IHeaders,
+    queryParams: IQueryParams,
+    headers: IHeaders,
     axiosRequestCallFn: (fnUrl: string, fnRequestConfig: AxiosRequestConfig) => Promise<AxiosResponse<K>>
   ): Promise<IApiResponse<K>> {
 

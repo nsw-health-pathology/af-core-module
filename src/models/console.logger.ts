@@ -1,5 +1,6 @@
 /* eslint-disable no-magic-numbers */
 /* eslint-disable @typescript-eslint/tslint/config */
+
 import { Logger } from '@azure/functions';
 
 /**

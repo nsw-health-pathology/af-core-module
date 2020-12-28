@@ -1,4 +1,4 @@
-import { IHttpResponse } from './../azure-function-response';
+import { IHttpResponse } from '../azure-function-response';
 import { IHttpErrorResponse } from './http-error-response';
 
 /** Determines if error object is an instance of an Api Error */

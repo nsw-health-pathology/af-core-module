@@ -1,6 +1,4 @@
-import { IApiResponse } from '../models/api-response';
-import { IHeaders } from '../models/http-headers';
-import { IQueryParams } from '../models/http-query-params';
+import { IQueryParams, IHeaders, IApiResponse } from '../models';
 
 /**
  * Abstract http data service
