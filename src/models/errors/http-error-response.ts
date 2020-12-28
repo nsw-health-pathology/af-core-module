@@ -46,6 +46,5 @@ export interface IHttpErrorResponse {
    * An object that captures additional details of the error.
    * Used to return error responses from downstream api endpoints
    */
-  // tslint:disable-next-line: no-any
-  additionalInformation?: any;
+  additionalInformation?: unknown;
 }

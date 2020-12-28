@@ -5,7 +5,7 @@ import 'mocha';
 import { BadRequestError } from '../../../src/models/errors';
 
 describe('BadRequestError', () => {
-  it('should return 400 for status code', async () => {
+  it('should return 400 for status code', () => {
     const err = new BadRequestError('searchValue not specified');
 
     expect(err.statusCode).to.be.equal(StatusCodes.BAD_REQUEST);

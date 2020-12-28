@@ -8,21 +8,15 @@ export class DownstreamApiError extends Error implements IApiError {
 
   private readonly errorStatusCode: number;
 
-  // tslint:disable-next-line: no-any
-  private readonly errorResponse: any;
+  private readonly errorResponse: unknown;
 
   public get statusCode(): number { return this.errorStatusCode; }
   public get type(): string { return `https://httpstatuses.com/${this.errorStatusCode}`; }
   public get title(): string { return 'DOWNSTREAM_API_ERROR'; }
 
-  // tslint:disable: no-any
-  // tslint:disable: no-unsafe-any
-  public get additionalInformation(): any { return this.errorResponse; }
-  // tslint:enable: no-any
-  // tslint:enable: no-unsafe-any
+  public get additionalInformation(): unknown { return this.errorResponse; }
 
-  // tslint:disable-next-line: no-any
-  constructor(response: IApiResponse<any>) {
+  constructor(response: IApiResponse<unknown>) {
     const message = 'An error occurred in a downstream request. See additionalInformation for more details';
     super(message);
 

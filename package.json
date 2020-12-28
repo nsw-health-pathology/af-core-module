@@ -9,10 +9,9 @@
     "build:production": "npm run build && npm prune --production",
     "test": "mocha --config .mocharc.json 'test/**/*.spec.ts'",
     "test:watch": "npm run test -- --watch-extensions ts --watch",
-    "lint": "tslint -c tslint.json -p tsconfig.json",
-    "lint-fix": "npm run lint -- --fix",
-    "eslint": "eslint -c .eslintrc.js --ext .ts src",
-    "ci": "npm run lint && npm run cover && npm run build",
+    "eslint": "eslint -c .eslintrc.js --ext .ts src/** test/**",
+    "eslint-fix": "npm run eslint -- --fix",
+    "ci": "npm run eslint && npm run cover && npm run build",
     "cover": "cross-env NODE_ENV=test nyc --report lcovonly _mocha --config .mocharc.json 'test/**/*.spec.ts'",
     "prepare": "npm run build",
     "postversion": "git push && git push --tags"

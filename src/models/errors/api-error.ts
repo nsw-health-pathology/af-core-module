@@ -13,22 +13,26 @@ export interface IApiError extends Error {
   type: string;
   title: string;
 
-  // tslint:disable-next-line: no-any
-  additionalInformation?: any;
+  additionalInformation?: unknown;
 }
 
-export const responsePayloadFromApiError = (error: IApiError): IHttpErrorResponse => ({
-  status: error.statusCode,
-  type: error.type,
-  title: error.title,
-  detail: error.message,
-  additionalInformation: error.additionalInformation
-});
+export const responsePayloadFromApiError = (error: IApiError): IHttpErrorResponse => {
+  return {
+    status: error.statusCode,
+    type: error.type,
+    title: error.title,
+    detail: error.message,
+    additionalInformation: error.additionalInformation
+  };
+};
 
-export const azureFunctionResponseFromApiError = (error: IApiError): IHttpResponse<IHttpErrorResponse> => ({
-  body: responsePayloadFromApiError(error),
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  status: error.statusCode
-});
+export const azureFunctionResponseFromApiError = (error: IApiError): IHttpResponse<IHttpErrorResponse> => {
+  return {
+    body: responsePayloadFromApiError(error),
+    headers: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'Content-Type': 'application/json'
+    },
+    status: error.statusCode
+  };
+};

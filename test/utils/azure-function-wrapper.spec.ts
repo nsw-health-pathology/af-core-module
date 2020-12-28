@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import 'mocha';
@@ -8,11 +10,12 @@ import { azureFunctionWrapper } from '../../src/utils/azure-function-wrapper';
 describe('azureFunctionWrapper', () => {
   it('should return json response on success', async () => {
 
-    const response = await azureFunctionWrapper(async () =>
-      ({
+    const response = await azureFunctionWrapper(async () => {
+      return Promise.resolve({
         body: { version: '1.0.0' },
         status: StatusCodes.OK
-      }));
+      });
+    });
 
     expect(response.body).to.be.deep.equal({ version: '1.0.0' });
     expect(response.status).to.be.equal(StatusCodes.OK);
@@ -22,12 +25,13 @@ describe('azureFunctionWrapper', () => {
 
   it('should return xml response if defined on return header', async () => {
 
-    const response = await azureFunctionWrapper(async () =>
-      ({
+    const response = await azureFunctionWrapper(async () => {
+      return Promise.resolve({
         body: { version: '1.0.0' },
         status: StatusCodes.OK,
         headers: { 'Content-Type': 'application/xml' }
-      }));
+      });
+    });
 
     expect(response.body).to.be.deep.equal({ version: '1.0.0' });
     expect(response.status).to.be.equal(StatusCodes.OK);
@@ -37,12 +41,13 @@ describe('azureFunctionWrapper', () => {
 
   it('should include custom http headers on response', async () => {
 
-    const response = await azureFunctionWrapper(async () =>
-      ({
+    const response = await azureFunctionWrapper(async () => {
+      return Promise.resolve({
         body: { version: '1.0.0' },
         status: StatusCodes.OK,
         headers: { 'X_IDENTITY-TOKEN': 'User123' }
-      }));
+      });
+    });
 
     expect(response.body).to.be.deep.equal({ version: '1.0.0' });
     expect(response.status).to.be.equal(StatusCodes.OK);
@@ -53,7 +58,7 @@ describe('azureFunctionWrapper', () => {
 
   it('should return http error response on api error', async () => {
 
-    const response = await azureFunctionWrapper(async () => {
+    const response = await azureFunctionWrapper(() => {
       throw new BadRequestError('Missing request body');
     });
 
@@ -69,7 +74,7 @@ describe('azureFunctionWrapper', () => {
 
   it('should internal server error response on generic error', async () => {
 
-    const response = await azureFunctionWrapper(async () => {
+    const response = await azureFunctionWrapper(() => {
       throw new Error('The milks gone bad');
     });
 

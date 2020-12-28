@@ -14,6 +14,8 @@ export const azureFunctionHttpResponseFromApiResponse = <T>(response: IApiRespon
 
   // Default headers to be a JSON response. If the client has specified different headers,
   // then allow this to overwrite in the header
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   let headers: IHeaders = { 'Content-Type': defaultContentType };
 
   headers = { ...headers, ...response.headers };

@@ -22,7 +22,7 @@ module.exports = {
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "tsconfig.json",
+    "project": ["tsconfig.json", "tsconfig.spec.json"],
     "sourceType": "module"
   },
   "plugins": [
@@ -155,7 +155,7 @@ module.exports = {
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": false
+        "devDependencies": ["test/**"]
       }
     ],
     "import/order": "error",

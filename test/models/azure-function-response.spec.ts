@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import 'mocha';
@@ -11,7 +13,7 @@ interface IVersionApiResponse {
 }
 
 describe('azureFunctionHttpResponseFromApiResponse', () => {
-  it('should generate the model for a json api response', async () => {
+  it('should generate the model for a json api response', () => {
 
     const response: IApiResponse<IVersionApiResponse> = {
       body: { version: '1.0.0' },
@@ -25,7 +27,7 @@ describe('azureFunctionHttpResponseFromApiResponse', () => {
   });
 
 
-  it('should generate the model for a xml api response', async () => {
+  it('should generate the model for a xml api response', () => {
 
     const response: IApiResponse<string> = {
       body: '<xml>Hello World!</xml>',
@@ -39,11 +41,11 @@ describe('azureFunctionHttpResponseFromApiResponse', () => {
     expect(payload.headers).to.be.deep.equal(response.headers);
   });
 
-  it('should default to text/plain for string response', async () => {
+  it('should default to text/plain for string response', () => {
 
     const response: IApiResponse<string> = {
       body: 'Hello World!',
-      status: StatusCodes.OK,
+      status: StatusCodes.OK
     };
 
     const payload = azureFunctionHttpResponseFromApiResponse(response);
