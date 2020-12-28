@@ -5,11 +5,11 @@ import {
   azureFunctionResponseFromApiError,
   isInstanceOfApiError,
   responsePayloadFromApiError,
-  IApiError,
+  IApiError
 } from '../../../src/models/errors';
 
 describe('isInstanceOfApiError', () => {
-  it('should return true if the model looks to be of type IAPiError', async () => {
+  it('should return true if the model looks to be of type IAPiError', () => {
 
     // Model must have status, title, and type to be considered an IApiError
 
@@ -18,14 +18,14 @@ describe('isInstanceOfApiError', () => {
       message: 'Cannot read property billingDetails of undefined',
       statusCode: 500,
       title: 'Internal Server Error',
-      type: 'https://httpstatuses.com/500',
+      type: 'https://httpstatuses.com/500'
     };
 
     const isApiError = isInstanceOfApiError(err);
     expect(isApiError).to.be.equal(true);
   });
 
-  it('should return false if the model does not look to be of type IAPiError', async () => {
+  it('should return false if the model does not look to be of type IAPiError', () => {
 
     // Model must have status, title, and type to be considered an IApiError
 
@@ -34,14 +34,14 @@ describe('isInstanceOfApiError', () => {
       message: 'Cannot read property billingDetails of undefined',
       // statusCode: 500,
       title: 'Internal Server Error',
-      type: 'https://httpstatuses.com/500',
+      type: 'https://httpstatuses.com/500'
     };
 
     const isApiError = isInstanceOfApiError(err);
     expect(isApiError).to.be.equal(false);
   });
 
-  it('should return false if the model does not look to be of type IAPiError', async () => {
+  it('should return false if the model does not look to be of type IAPiError', () => {
     const isApiError = isInstanceOfApiError(new Error('The milks gone bad!'));
     expect(isApiError).to.be.equal(false);
   });
@@ -49,13 +49,13 @@ describe('isInstanceOfApiError', () => {
 
 
 describe('responsePayloadFromApiError', () => {
-  it('should generate the model for the Api Error payload', async () => {
+  it('should generate the model for the Api Error payload', () => {
     const err: IApiError = {
       name: 'Internal Server Error',
       message: 'Cannot read property billingDetails of undefined',
       statusCode: 500,
       title: 'Internal Server Error',
-      type: 'https://httpstatuses.com/500',
+      type: 'https://httpstatuses.com/500'
     };
     const payload = responsePayloadFromApiError(err);
     expect(payload.status).to.be.equal(err.statusCode);
@@ -66,13 +66,13 @@ describe('responsePayloadFromApiError', () => {
 });
 
 describe('azureFunctionResponseFromApiError ', () => {
-  it('should generate the model for the Api Error payload', async () => {
+  it('should generate the model for the Api Error payload', () => {
     const err: IApiError = {
       name: 'Internal Server Error',
       message: 'Cannot read property billingDetails of undefined',
       statusCode: 500,
       title: 'Internal Server Error',
-      type: 'https://httpstatuses.com/500',
+      type: 'https://httpstatuses.com/500'
     };
     const payload = azureFunctionResponseFromApiError(err);
     expect(payload.body.status).to.be.equal(err.statusCode);

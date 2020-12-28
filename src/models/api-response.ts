@@ -6,7 +6,6 @@ import { IHeaders } from './http-headers';
 export interface IApiResponse<T> {
   status: number;
   body: T;
-  // tslint:disable-next-line: no-any
-  error?: any;
+  error?: unknown;
   headers?: IHeaders;
 }

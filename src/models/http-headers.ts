@@ -1,2 +1,2 @@
 /** Interface for http request headers */
-export interface IHeaders { [key: string]: string; }
+export interface IHeaders { [key: string]: string }

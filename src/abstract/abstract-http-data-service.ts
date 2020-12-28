@@ -1,6 +1,4 @@
-import { IApiResponse } from '../models/api-response';
-import { IHeaders } from '../models/http-headers';
-import { IQueryParams } from '../models/http-query-params';
+import { IQueryParams, IHeaders, IApiResponse } from '../models';
 
 /**
  * Abstract http data service
@@ -8,11 +6,11 @@ import { IQueryParams } from '../models/http-query-params';
 export abstract class AbstractHttpDataService {
 
   /** Make a HTTP call with GET HTTP method */
-  public abstract makeHttpGetCall<K>(url: string, queryParams: IQueryParams, headers: IHeaders): Promise<IApiResponse<K>>;
+  public abstract makeHttpGetCall<K>(url: string, headers: IHeaders, queryParams: IQueryParams): Promise<IApiResponse<K>>;
 
   /** Make a HTTP call with PUT HTTP method */
-  public abstract makeHttpPutCall<T, K = T>(url: string, headers: IHeaders, payload: T): Promise<IApiResponse<K>>;
+  public abstract makeHttpPutCall<T, K = T>(url: string, payload: T, headers: IHeaders): Promise<IApiResponse<K>>;
 
   /** Make a HTTP call with POST HTTP method */
-  public abstract makeHttpPostCall<T, K = T>(url: string, headers: IHeaders, payload: T, queryParams?: IQueryParams): Promise<IApiResponse<K>>;
+  public abstract makeHttpPostCall<T, K = T>(url: string, payload: T, headers: IHeaders, queryParams: IQueryParams): Promise<IApiResponse<K>>;
 }

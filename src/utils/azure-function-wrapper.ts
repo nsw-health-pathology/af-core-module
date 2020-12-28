@@ -1,9 +1,9 @@
-import { azureFunctionHttpResponseFromApiResponse, IApiResponse } from '../models';
-import { azureFunctionResponseFromApiError, isInstanceOfApiError, InternalServerError, IApiError } from '../models/errors/';
+import { azureFunctionHttpResponseFromApiResponse, IApiResponse, IHttpResponse } from '../models';
+import { azureFunctionResponseFromApiError, isInstanceOfApiError, InternalServerError, IApiError, IHttpErrorResponse } from '../models/errors';
 
 export const azureFunctionWrapper = async <T>(
   fn: () => Promise<IApiResponse<T>>
-) => {
+): Promise<IHttpResponse<T> | IHttpResponse<IHttpErrorResponse>> => {
   try {
     const response = await fn();
     return azureFunctionHttpResponseFromApiResponse(response);

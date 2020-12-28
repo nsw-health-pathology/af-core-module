@@ -6,7 +6,7 @@ import { IApiResponse } from '../../../src/models';
 import { BadRequestError, DownstreamApiError } from '../../../src/models/errors';
 
 describe('DownstreamApiError', () => {
-  it('should return downstream status code and error', async () => {
+  it('should return downstream status code and error', () => {
 
     const response: IApiResponse<BadRequestError> = {
       status: StatusCodes.UNAUTHORIZED,
