@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { IApiError } from './api-error';
 
-/** Represents a generic RESTful API error */
+/** Represents a 400 Bad Request RESTful API error */
 export class BadRequestError extends Error implements IApiError {
 
   public get statusCode(): number { return StatusCodes.BAD_REQUEST; }
