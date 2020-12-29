@@ -2,6 +2,10 @@
 
 This module provides a base set of core tooling support for Azure Functions for the NodeJS runtime.
 
+![Workflow Status](https://img.shields.io/github/workflow/status/nsw-health-pathology/af-app-insights/node-js-build-ci/develop)
+![Coverage](https://img.shields.io/coveralls/github/nsw-health-pathology/af-core-module/develop)
+![Licence](https://img.shields.io/github/license/nsw-health-pathology/af-app-insights)
+
 - [Azure Function - Core Module](#azure-function---core-module)
   - [Bindings](#bindings)
   - [Models](#models)
@@ -45,7 +49,7 @@ An example usage:
 const response = await azureFunctionWrapper(async () => {
 
   // Validate the semantics of the inbound http request
-  
+
   if (!req.body || req.body === {}) {
     throw new BadRequestError('Missing request body');
   }
