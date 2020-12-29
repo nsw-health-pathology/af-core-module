@@ -1,3 +1,6 @@
+/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/naming-convention */
+
 /** Enum class for HttpMethod that can be used instead of strings */
 export enum HttpMethodVerb {
   GET = 'GET',

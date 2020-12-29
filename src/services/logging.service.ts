@@ -12,38 +12,32 @@ export class LoggingService {
     this.loggers = loggers;
   }
 
-  // tslint:disable: no-any
-  // tslint:disable: no-void-expression
-
   /**
    * Writes an error level log
    */
-  public error(...args: any[]): void {
-    this.loggers.forEach(l => l.error(args));
+  public error(...args: unknown[]): void {
+    this.loggers.forEach(l => { return l.error(args); });
   }
 
   /**
    * Writes an warn level log
    */
-  public warn(...args: any[]): void {
-    this.loggers.forEach(l => l.warn(args));
+  public warn(...args: unknown[]): void {
+    this.loggers.forEach(l => { return l.warn(args); });
   }
 
   /**
    * Writes an info level log
    */
-  public info(...args: any[]): void {
-    this.loggers.forEach(l => l.info(args));
+  public info(...args: unknown[]): void {
+    this.loggers.forEach(l => { return l.info(args); });
   }
 
   /**
    * Writes an verbose level log
    */
-  public verbose(...args: any[]): void {
-    this.loggers.forEach(l => l.verbose(args));
+  public verbose(...args: unknown[]): void {
+    this.loggers.forEach(l => { return l.verbose(args); });
   }
-
-  // tslint:enable: no-any
-  // tslint:enable: no-void-expression
 
 }

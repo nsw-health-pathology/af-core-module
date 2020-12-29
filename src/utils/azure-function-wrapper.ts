@@ -1,15 +1,21 @@
-import { IApiResponse } from '../models/api-response';
-import { azureFunctionJsonResponseFromApiResponse } from '../models/azure-function-response';
-import { azureFunctionResponseFromApiError, IApiError } from '../models/errors/api-error';
+import { azureFunctionHttpResponseFromApiResponse, IApiResponse, IHttpResponse } from '../models';
+import { azureFunctionResponseFromApiError, isInstanceOfApiError, InternalServerError, IApiError, IHttpErrorResponse } from '../models/errors';
 
 export const azureFunctionWrapper = async <T>(
   fn: () => Promise<IApiResponse<T>>
-) => {
+): Promise<IHttpResponse<T> | IHttpResponse<IHttpErrorResponse>> => {
   try {
     const response = await fn();
-    return azureFunctionJsonResponseFromApiResponse(response);
+    return azureFunctionHttpResponseFromApiResponse(response);
   } catch (error) {
-    const apiError = error as IApiError;
-    return azureFunctionResponseFromApiError(apiError);
+
+    const e = error as Error;
+    if (isInstanceOfApiError(e)) {
+      return azureFunctionResponseFromApiError(e);
+    }
+
+    // Error was not an instance of an IApiError. Cannot properly handle
+    // Return error as an internal server error instead.
+    return azureFunctionResponseFromApiError(new InternalServerError(e));
   }
 };
