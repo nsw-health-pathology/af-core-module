@@ -217,7 +217,16 @@ module.exports = {
     "no-eval": "error",
     "no-fallthrough": "error",
     "no-invalid-this": "error",
-    "no-magic-numbers": "error",
+    "no-magic-numbers": [
+      "warn",
+      {
+        "ignore": [
+          -1,
+          0,
+          1
+        ]
+      }
+    ],
     "no-new-wrappers": "error",
     "no-return-await": "error",
     "no-sequences": "error",
