@@ -89,8 +89,9 @@ describe('AxiosHttpDataService', () => {
       const responseBody = { version: '1.0.0' };
 
       // Setup Mock Responses
-      const mockAxios = new MockAdapter(Axios);
-      mockAxios.onPut('/version').reply(responseStatus, responseBody);
+      nock(/.*/)
+        .put('/version')
+        .reply(responseStatus, responseBody);
 
       const axiosHttp = new AxiosHttpDataService(Axios);
       const response = await axiosHttp.makeHttpPutCall('/version', {});
@@ -106,8 +107,9 @@ describe('AxiosHttpDataService', () => {
       const responseBody = { message: 'Missing API Key' };
 
       // Setup Mock Responses
-      const mockAxios = new MockAdapter(Axios);
-      mockAxios.onPut('/version').reply(responseStatus, responseBody);
+      nock(/.*/)
+        .put('/version')
+        .reply(responseStatus, responseBody);
 
       const axiosHttp = new AxiosHttpDataService(Axios);
       const response = await axiosHttp.makeHttpPutCall('/version', {});
@@ -125,10 +127,16 @@ describe('AxiosHttpDataService', () => {
     it('should return internal server error on critical failure', async () => {
 
       const responseStatus = StatusCodes.INTERNAL_SERVER_ERROR;
+      const responseBody = 'API Call Failed. Network Error';
 
       // Setup Mock Responses
-      const mockAxios = new MockAdapter(Axios);
-      mockAxios.onPut('/version').networkError();
+      nock(/.*/)
+        .put('/version')
+        .replyWithError({
+          data: responseBody,
+          message: 'Network Error',
+          name: 'Error'
+        });
 
       const axiosHttp = new AxiosHttpDataService(Axios);
       const response = await axiosHttp.makeHttpPutCall('/version', {});
@@ -136,7 +144,7 @@ describe('AxiosHttpDataService', () => {
       expect(response.status).to.be.equal(responseStatus);
       expect(response.body).to.be.deep.equal({});
       expect(response.error).to.be.deep.equal({
-        data: 'API Call Failed. Network Error',
+        data: responseBody,
         message: 'Network Error',
         name: 'Error'
       });
