@@ -124,7 +124,7 @@ describe('AxiosHttpDataService', () => {
       mockAxios.onPost('/version').reply(StatusCodes.OK, { version: '1.0.0' });
 
       const axiosHttp = new AxiosHttpDataService(Axios);
-      const response = await axiosHttp.makeHttpPostCall('/version', {}, {});
+      const response = await axiosHttp.makeHttpPostCall('/version', {});
 
       expect(response.status).to.be.equal(StatusCodes.OK);
       expect(response.body).to.be.deep.equal({ version: '1.0.0' });
@@ -138,7 +138,7 @@ describe('AxiosHttpDataService', () => {
       mockAxios.onPost('/version').reply(StatusCodes.UNAUTHORIZED, { message: 'Missing API Key' });
 
       const axiosHttp = new AxiosHttpDataService(Axios);
-      const response = await axiosHttp.makeHttpPostCall('/version', {}, {});
+      const response = await axiosHttp.makeHttpPostCall('/version', {});
 
       expect(response.status).to.be.equal(StatusCodes.UNAUTHORIZED);
       expect(response.body).to.be.deep.equal({ message: 'Missing API Key' });
@@ -157,7 +157,7 @@ describe('AxiosHttpDataService', () => {
       mockAxios.onPost('/version').networkError();
 
       const axiosHttp = new AxiosHttpDataService(Axios);
-      const response = await axiosHttp.makeHttpPostCall('/version', {}, {});
+      const response = await axiosHttp.makeHttpPostCall('/version', {});
 
       expect(response.status).to.be.equal(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(response.body).to.be.deep.equal({});
