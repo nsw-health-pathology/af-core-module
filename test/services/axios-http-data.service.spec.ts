@@ -2,11 +2,9 @@ import Axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { expect } from 'chai';
 import 'mocha';
-import { anything, mock, spy, verify, when } from 'ts-mockito';
 
 import { StatusCodes } from 'http-status-codes';
-import { ConsoleLogger } from '../../src/models';
-import { AxiosHttpDataService, LoggingService } from '../../src/services';
+import { AxiosHttpDataService } from '../../src/services';
 
 describe('AxiosHttpDataService', () => {
 
