@@ -103,6 +103,36 @@ describe('AxiosHttpDataService', () => {
       });
     });
 
+    it('should retry the api request if a timeout is received', async () => {
+
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // delay the first 2 x api calls by 2000ms
+      nock(/.*/)
+        .get('/version')
+        .twice()
+        .delay(2000)
+        .reply(responseStatus, responseBody);
+
+      nock(/.*/)
+        .get('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(Axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 1000;
+      const retries = 3;
+
+      const response = await axiosHttp.makeHttpGetCall('/version', headers, queryParams, timeout, retries);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
   });
 
   describe('makeHttpPutCall', () => {
@@ -198,6 +228,36 @@ describe('AxiosHttpDataService', () => {
       });
     });
 
+    it('should retry the api request if a timeout is received', async () => {
+
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // delay the first 2 x api calls by 2000ms
+      nock(/.*/)
+        .put('/version')
+        .twice()
+        .delay(2000)
+        .reply(responseStatus, responseBody);
+
+      nock(/.*/)
+        .put('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(Axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 1000;
+      const retries = 3;
+
+      const response = await axiosHttp.makeHttpPutCall('/version', {}, headers, timeout, retries);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
   });
 
   describe('makeHttpPostCall', () => {
@@ -267,6 +327,7 @@ describe('AxiosHttpDataService', () => {
         name: 'Error'
       });
     });
+
     it('should timeout if no response is received after the specified period', async () => {
 
       nock(/.*/)
@@ -291,5 +352,37 @@ describe('AxiosHttpDataService', () => {
         name: 'Error'
       });
     });
+
+    it('should retry the api request if a timeout is received', async () => {
+
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // delay the first 2 x api calls by 2000ms
+      nock(/.*/)
+        .post('/version')
+        .twice()
+        .delay(2000)
+        .reply(responseStatus, responseBody);
+
+      nock(/.*/)
+        .post('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(Axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 1000;
+      const retries = 3;
+
+      const response = await axiosHttp.makeHttpPostCall('/version', {}, headers, queryParams, timeout, retries);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
   });
+
 });
