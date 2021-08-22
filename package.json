@@ -55,12 +55,12 @@
     "ts-mockito": "^2.6.1",
     "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "nock": "^13.1.2"
   },
   "dependencies": {
     "@azure/functions": "^1.2.2",
     "axios": "^0.19.2",
-    "http-status-codes": "^2.1.4",
-    "nock": "^13.1.2"
+    "http-status-codes": "^2.1.4"
   }
 }

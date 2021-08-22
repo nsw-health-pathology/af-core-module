@@ -144,7 +144,13 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
         return apiResponse as IApiResponse<any>;
       }
     }
-    return {} as IApiResponse<any>;
-  }
 
+    const fallbackApiResponse: IApiResponse<unknown> = {
+      body: {},
+      status: StatusCodes.INTERNAL_SERVER_ERROR
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return fallbackApiResponse as IApiResponse<any>;
+  }
 }

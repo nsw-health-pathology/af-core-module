@@ -9,6 +9,8 @@ import { IHeaders, IQueryParams } from '../../src/models';
 
 describe('AxiosHttpDataService', () => {
 
+  const timeoutDelay = 2000;
+
   describe('makeHttpGetCall', () => {
 
     it('should make an axios GET call', async () => {
@@ -82,7 +84,7 @@ describe('AxiosHttpDataService', () => {
 
       nock(/.*/)
         .get('/version')
-        .delay(2000)
+        .delay(timeoutDelay)
         .reply(StatusCodes.OK, 'Operation Success');
 
       const axiosHttp = new AxiosHttpDataService(Axios);
@@ -112,7 +114,7 @@ describe('AxiosHttpDataService', () => {
       nock(/.*/)
         .get('/version')
         .twice()
-        .delay(2000)
+        .delay(timeoutDelay)
         .reply(responseStatus, responseBody);
 
       nock(/.*/)
@@ -207,7 +209,7 @@ describe('AxiosHttpDataService', () => {
 
       nock(/.*/)
         .put('/version')
-        .delay(2000)
+        .delay(timeoutDelay)
         .reply(StatusCodes.OK, 'Operation Success');
 
       const axiosHttp = new AxiosHttpDataService(Axios);
@@ -237,7 +239,7 @@ describe('AxiosHttpDataService', () => {
       nock(/.*/)
         .put('/version')
         .twice()
-        .delay(2000)
+        .delay(timeoutDelay)
         .reply(responseStatus, responseBody);
 
       nock(/.*/)
@@ -332,7 +334,7 @@ describe('AxiosHttpDataService', () => {
 
       nock(/.*/)
         .post('/version')
-        .delay(2000)
+        .delay(timeoutDelay)
         .reply(StatusCodes.OK, 'Operation Success');
 
       const axiosHttp = new AxiosHttpDataService(Axios);
@@ -362,7 +364,7 @@ describe('AxiosHttpDataService', () => {
       nock(/.*/)
         .post('/version')
         .twice()
-        .delay(2000)
+        .delay(timeoutDelay)
         .reply(responseStatus, responseBody);
 
       nock(/.*/)
