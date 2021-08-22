@@ -1,7 +1,6 @@
 import Axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { expect } from 'chai';
-import 'mocha';
 
 import { StatusCodes } from 'http-status-codes';
 import nock from 'nock';
@@ -67,7 +66,6 @@ describe('AxiosHttpDataService', () => {
           name: 'Error'
         });
 
-
       const axiosHttp = new AxiosHttpDataService(Axios);
       const response = await axiosHttp.makeHttpGetCall('/version');
 
@@ -76,6 +74,31 @@ describe('AxiosHttpDataService', () => {
       expect(response.error).to.be.deep.equal({
         data: responseBody,
         message: 'Network Error',
+        name: 'Error'
+      });
+    });
+
+    it('should timeout if no response is received after the specified period', async () => {
+
+      nock(/.*/)
+        .get('/version')
+        .delay(2000)
+        .reply(StatusCodes.OK, 'Operation Success');
+
+      const axiosHttp = new AxiosHttpDataService(Axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 1000;
+      const retries = 0;
+
+      const response = await axiosHttp.makeHttpGetCall('/version', headers, queryParams, timeout, retries);
+
+      expect(response.status).to.be.equal(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).to.be.deep.equal({});
+      expect(response.error).to.be.deep.equal({
+        data: `API Call Failed. timeout of ${timeout}ms exceeded`,
+        message: `timeout of ${timeout}ms exceeded`,
         name: 'Error'
       });
     });
@@ -149,6 +172,32 @@ describe('AxiosHttpDataService', () => {
         name: 'Error'
       });
     });
+
+    it('should timeout if no response is received after the specified period', async () => {
+
+      nock(/.*/)
+        .put('/version')
+        .delay(2000)
+        .reply(StatusCodes.OK, 'Operation Success');
+
+      const axiosHttp = new AxiosHttpDataService(Axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 1000;
+      const retries = 0;
+
+      const response = await axiosHttp.makeHttpPutCall('/version', {}, headers, timeout, retries);
+
+      expect(response.status).to.be.equal(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).to.be.deep.equal({});
+      expect(response.error).to.be.deep.equal({
+        data: `API Call Failed. timeout of ${timeout}ms exceeded`,
+        message: `timeout of ${timeout}ms exceeded`,
+        name: 'Error'
+      });
+    });
+
   });
 
   describe('makeHttpPostCall', () => {
@@ -215,6 +264,30 @@ describe('AxiosHttpDataService', () => {
       expect(response.error).to.be.deep.equal({
         data: responseBody,
         message: 'Network Error',
+        name: 'Error'
+      });
+    });
+    it('should timeout if no response is received after the specified period', async () => {
+
+      nock(/.*/)
+        .post('/version')
+        .delay(2000)
+        .reply(StatusCodes.OK, 'Operation Success');
+
+      const axiosHttp = new AxiosHttpDataService(Axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 1000;
+      const retries = 0;
+
+      const response = await axiosHttp.makeHttpPostCall('/version', {}, headers, queryParams, timeout, retries);
+
+      expect(response.status).to.be.equal(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(response.body).to.be.deep.equal({});
+      expect(response.error).to.be.deep.equal({
+        data: `API Call Failed. timeout of ${timeout}ms exceeded`,
+        message: `timeout of ${timeout}ms exceeded`,
         name: 'Error'
       });
     });
