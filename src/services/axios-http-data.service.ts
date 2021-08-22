@@ -10,24 +10,27 @@ import { IApiResponse, IHeaders, IQueryParams } from '../models';
 export class AxiosHttpDataService extends AbstractHttpDataService {
 
   constructor(
-    protected readonly axiosClient: AxiosInstance,
+    protected readonly axiosClient: AxiosInstance
   ) {
     super();
   }
+
+  defaultTimeout = 0;
+  defaultRetries = 0;
 
   /** Make a HTTP call with GET HTTP method */
   async makeHttpGetCall<K>(
     url: string,
     headers: IHeaders = {},
     queryParams: IQueryParams = {},
-    timeout = 0,
-    retries = 0,
+    timeout = this.defaultTimeout,
+    retries = this.defaultRetries
   ): Promise<IApiResponse<K>> {
 
     const getCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
       return this.axiosClient.get<K>(
         innerUrl,
-        requestConfig,
+        requestConfig
       );
     };
 
@@ -39,15 +42,15 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     url: string,
     payload: T,
     headers: IHeaders = {},
-    timeout = 0,
-    retries = 0,
+    timeout = this.defaultTimeout,
+    retries = this.defaultRetries
   ): Promise<IApiResponse<K>> {
 
     const putCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
       return this.axiosClient.put<T, AxiosResponse<K>>(
         innerUrl,
         payload,
-        requestConfig,
+        requestConfig
       );
     };
 
@@ -60,15 +63,15 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     payload: T,
     headers: IHeaders = {},
     queryParams: IQueryParams = {},
-    timeout = 0,
-    retries = 0,
+    timeout = this.defaultTimeout,
+    retries = this.defaultRetries
   ): Promise<IApiResponse<K>> {
 
     const postCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
       return this.axiosClient.post<T, AxiosResponse<K>>(
         innerUrl,
         payload,
-        requestConfig,
+        requestConfig
       );
     };
 
@@ -91,13 +94,13 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     headers: IHeaders,
     timeout: number,
     retries: number,
-    axiosRequestCallFn: (fnUrl: string, fnRequestConfig: AxiosRequestConfig) => Promise<AxiosResponse<K>>,
+    axiosRequestCallFn: (fnUrl: string, fnRequestConfig: AxiosRequestConfig) => Promise<AxiosResponse<K>>
   ): Promise<IApiResponse<K>> {
 
     const requestConfig: AxiosRequestConfig = {
       headers,
       params: queryParams,
-      timeout,
+      timeout
     };
 
     for (let attempt = 0; attempt <= retries; attempt++) {
@@ -108,7 +111,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
         const apiResponse: IApiResponse<K> = {
           body: response.data,
           status: response.status,
-          headers: response.headers as IHeaders,
+          headers: response.headers as IHeaders
         };
 
         return apiResponse;
@@ -127,14 +130,14 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
           name: e.name,
           message: e.message,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          data: e.response?.data || `API Call Failed. ${e.message}`,
+          data: e.response?.data || `API Call Failed. ${e.message}`
         };
 
         const apiResponse: IApiResponse<unknown> = {
           body: e.response?.data || {},
           error: errorData,
           status: e.response?.status || StatusCodes.INTERNAL_SERVER_ERROR,
-          headers: e.response?.headers as IHeaders,
+          headers: e.response?.headers as IHeaders
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
