@@ -158,8 +158,9 @@ describe('AxiosHttpDataService', () => {
       const responseBody = { version: '1.0.0' };
 
       // Setup Mock Responses
-      const mockAxios = new MockAdapter(Axios);
-      mockAxios.onPost('/version').reply(responseStatus, responseBody);
+      nock(/.*/)
+        .post('/version')
+        .reply(responseStatus, responseBody);
 
       const axiosHttp = new AxiosHttpDataService(Axios);
       const response = await axiosHttp.makeHttpPostCall('/version', {});
@@ -175,8 +176,9 @@ describe('AxiosHttpDataService', () => {
       const responseBody = { message: 'Missing API Key' };
 
       // Setup Mock Responses
-      const mockAxios = new MockAdapter(Axios);
-      mockAxios.onPost('/version').reply(responseStatus, responseBody);
+      nock(/.*/)
+        .post('/version')
+        .reply(responseStatus, responseBody);
 
       const axiosHttp = new AxiosHttpDataService(Axios);
       const response = await axiosHttp.makeHttpPostCall('/version', {});
@@ -194,10 +196,16 @@ describe('AxiosHttpDataService', () => {
     it('should return internal server error on critical failure', async () => {
 
       const responseStatus = StatusCodes.INTERNAL_SERVER_ERROR;
+      const responseBody = 'API Call Failed. Network Error';
 
       // Setup Mock Responses
-      const mockAxios = new MockAdapter(Axios);
-      mockAxios.onPost('/version').networkError();
+      nock(/.*/)
+        .post('/version')
+        .replyWithError({
+          data: responseBody,
+          message: 'Network Error',
+          name: 'Error'
+        });
 
       const axiosHttp = new AxiosHttpDataService(Axios);
       const response = await axiosHttp.makeHttpPostCall('/version', {});
@@ -205,7 +213,7 @@ describe('AxiosHttpDataService', () => {
       expect(response.status).to.be.equal(responseStatus);
       expect(response.body).to.be.deep.equal({});
       expect(response.error).to.be.deep.equal({
-        data: 'API Call Failed. Network Error',
+        data: responseBody,
         message: 'Network Error',
         name: 'Error'
       });
