@@ -64,7 +64,7 @@ describe('AxiosHttpDataService', () => {
   });
 
   describe('makeHttpPutCall', () => {
-    it('should make an axios POST call', async () => {
+    it('should make an axios PUT call', async () => {
 
       // Setup Mock Responses
       const mockAxios = new MockAdapter(Axios);
