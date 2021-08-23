@@ -97,9 +97,15 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     axiosRequestCallFn: (fnUrl: string, fnRequestConfig: AxiosRequestConfig) => Promise<AxiosResponse<K>>
   ): Promise<IApiResponse<K>> {
 
+    // Force at least one execution of the for loop
     if (retries < 0) {
       retries = 0;
     }
+
+    // Axios's requestConfig timeout parameter is based on the Server Response time.
+    // If a successful connection can be made to the remote server, the response has
+    // <timeout> milliseconds to return to the Axios client - otherwise it will trigger
+    // a 'timeout of 1ms exceeded' error
 
     const requestConfig: AxiosRequestConfig = {
       headers,
@@ -107,16 +113,14 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       timeout
     };
 
-    let apiResponse = {} as IApiResponse<K>;
-    let apiErrorResponse = {} as IApiResponse<unknown>;
-    let errorData;
+    let lastKnownApiErrorResponse: IApiResponse<unknown> | undefined;
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
 
         const response = await axiosRequestCallFn(url, requestConfig);
 
-        apiResponse = {
+        const apiResponse: IApiResponse<K> = {
           body: response.data,
           status: response.status,
           headers: response.headers as IHeaders
@@ -126,35 +130,52 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
 
       } catch (error) {
 
-        const e = error as AxiosError<{ response?: { data: unknown } }>;
+        const e = error as AxiosError;
 
-        const message = e.message;
-        const data = e.response?.data;
-        errorData = {
+        const errorMessage = e.message;
+        const responseData = e.response?.data;
+
+        const errorData = {
           name: e.name,
-          message: e.message,
-          data: data || `API Call Failed. ${message}`
+          message: errorMessage,
+          data: responseData || `API Call Failed. ${errorMessage}`
         };
 
-        apiErrorResponse = {
-          body: (e.response?.data || {}),
+        lastKnownApiErrorResponse = {
+          body: (responseData || {}),
           error: errorData,
           status: e.response?.status || StatusCodes.INTERNAL_SERVER_ERROR,
           headers: e.response?.headers as IHeaders
         };
 
+        // This regex was derived from testing with the Axios client
+        // The first error is based on the Server Response timeout
+        // The second error is based on the  HTTP TCP Connection Timeout
         const timeoutRegExp = /^timeout of [0-9]+ms exceeded$/;
+        const nodeTimeoutError = /ETIMEDOUT/
 
-        if (timeoutRegExp.test(errorData.message)) {
+        if (timeoutRegExp.test(errorData.message) || nodeTimeoutError.test(errorData.message)) {
+          console.log(errorData.message)
           continue;
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return apiErrorResponse as IApiResponse<any>;
+        return lastKnownApiErrorResponse as IApiResponse<any>;
+      }
+    }
+
+    // The typescript compiler is not able to infer at least one execution of the
+    // for loop so it believes that lastKnownApiErrorResponse could still be undefined.
+    // Whilst we don't expect it to be, this should at least allow us to catch a last responsible
+    // moment before returning to the calling application code.
+    if (!lastKnownApiErrorResponse) {
+      lastKnownApiErrorResponse = {
+        body: {},
+        status: StatusCodes.INTERNAL_SERVER_ERROR
       }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return apiErrorResponse as IApiResponse<any>;
+    return lastKnownApiErrorResponse as IApiResponse<any>;
   }
 }
