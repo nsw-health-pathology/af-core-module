@@ -133,7 +133,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
         const e = error as AxiosError;
 
         const errorMessage = e.message;
-        const responseData = e.response?.data;
+        const responseData: unknown = e.response?.data;
 
         const errorData = {
           name: e.name,
@@ -152,10 +152,9 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
         // The first error is based on the Server Response timeout
         // The second error is based on the  HTTP TCP Connection Timeout
         const timeoutRegExp = /^timeout of [0-9]+ms exceeded$/;
-        const nodeTimeoutError = /ETIMEDOUT/
+        const nodeTimeoutError = /ETIMEDOUT/;
 
         if (timeoutRegExp.test(errorData.message) || nodeTimeoutError.test(errorData.message)) {
-          console.log(errorData.message)
           continue;
         }
 
@@ -172,7 +171,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       lastKnownApiErrorResponse = {
         body: {},
         status: StatusCodes.INTERNAL_SERVER_ERROR
-      }
+      };
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
