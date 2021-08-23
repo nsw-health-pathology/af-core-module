@@ -97,18 +97,26 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     axiosRequestCallFn: (fnUrl: string, fnRequestConfig: AxiosRequestConfig) => Promise<AxiosResponse<K>>
   ): Promise<IApiResponse<K>> {
 
+    if (retries < 0) {
+      retries = 0;
+    }
+
     const requestConfig: AxiosRequestConfig = {
       headers,
       params: queryParams,
       timeout
     };
 
+    let apiResponse = {} as IApiResponse<K>;
+    let apiErrorResponse = {} as IApiResponse<unknown>;
+    let errorData;
+
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
 
         const response = await axiosRequestCallFn(url, requestConfig);
 
-        const apiResponse: IApiResponse<K> = {
+        apiResponse = {
           body: response.data,
           status: response.status,
           headers: response.headers as IHeaders
@@ -118,39 +126,35 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
 
       } catch (error) {
 
-        const e: AxiosError = error as AxiosError;
+        const e = error as AxiosError<{ response?: { data: unknown } }>;
 
-        const timeoutRegExp = /^timeout of [0-9]+ms exceeded$/;
-
-        if (attempt < retries && timeoutRegExp.test(e.message)) {
-          continue;
-        }
-
-        const errorData = {
+        const message = e.message;
+        const data = e.response?.data;
+        errorData = {
           name: e.name,
           message: e.message,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          data: e.response?.data || `API Call Failed. ${e.message}`
+          data: data || `API Call Failed. ${message}`
         };
 
-        const apiResponse: IApiResponse<unknown> = {
-          body: e.response?.data || {},
+        apiErrorResponse = {
+          body: (e.response?.data || {}),
           error: errorData,
           status: e.response?.status || StatusCodes.INTERNAL_SERVER_ERROR,
           headers: e.response?.headers as IHeaders
         };
 
+        const timeoutRegExp = /^timeout of [0-9]+ms exceeded$/;
+
+        if (timeoutRegExp.test(errorData.message)) {
+          continue;
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return apiResponse as IApiResponse<any>;
+        return apiErrorResponse as IApiResponse<any>;
       }
     }
 
-    const fallbackApiResponse: IApiResponse<unknown> = {
-      body: {},
-      status: StatusCodes.INTERNAL_SERVER_ERROR
-    };
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return fallbackApiResponse as IApiResponse<any>;
+    return apiErrorResponse as IApiResponse<any>;
   }
 }
