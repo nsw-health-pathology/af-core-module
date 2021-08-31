@@ -54,3 +54,5 @@ coverage/
 # .coveralls file only contains repo access token. This access token
 # is stored as a GitHub secret used in the workflow
 .coveralls
+
+playground/
