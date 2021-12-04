@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@azure/functions": "^1.2.2",
-    "axios": "^0.19.2",
+    "axios": "^0.24.0",
     "http-status-codes": "^2.1.4"
   }
 }
