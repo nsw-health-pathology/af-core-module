@@ -1,4 +1,4 @@
-import Axios from 'axios';
+import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { expect } from 'chai';
 
@@ -23,7 +23,7 @@ describe('AxiosHttpDataService', () => {
         .get('/version')
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpGetCall('/version');
 
       expect(response.status).to.be.equal(responseStatus);
@@ -41,7 +41,7 @@ describe('AxiosHttpDataService', () => {
         .get('/version')
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpGetCall('/version');
 
       expect(response.status).to.be.equal(responseStatus);
@@ -68,7 +68,7 @@ describe('AxiosHttpDataService', () => {
           name: 'Error'
         });
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpGetCall('/version');
 
       expect(response.status).to.be.equal(responseStatus);
@@ -87,7 +87,7 @@ describe('AxiosHttpDataService', () => {
         .delay(timeoutDelay)
         .reply(StatusCodes.OK, 'Operation Success');
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
 
       const headers = {} as IHeaders;
       const queryParams = {} as IQueryParams;
@@ -122,7 +122,7 @@ describe('AxiosHttpDataService', () => {
         .once()
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
 
       const headers = {} as IHeaders;
       const queryParams = {} as IQueryParams;
@@ -148,7 +148,7 @@ describe('AxiosHttpDataService', () => {
         .put('/version')
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpPutCall('/version', {});
 
       expect(response.status).to.be.equal(responseStatus);
@@ -166,7 +166,7 @@ describe('AxiosHttpDataService', () => {
         .put('/version')
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpPutCall('/version', {});
 
       expect(response.status).to.be.equal(responseStatus);
@@ -193,7 +193,7 @@ describe('AxiosHttpDataService', () => {
           name: 'Error'
         });
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpPutCall('/version', {});
 
       expect(response.status).to.be.equal(responseStatus);
@@ -212,7 +212,7 @@ describe('AxiosHttpDataService', () => {
         .delay(timeoutDelay)
         .reply(StatusCodes.OK, 'Operation Success');
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
 
       const headers = {} as IHeaders;
       const queryParams = {} as IQueryParams;
@@ -247,7 +247,7 @@ describe('AxiosHttpDataService', () => {
         .once()
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
 
       const headers = {} as IHeaders;
       const queryParams = {} as IQueryParams;
@@ -273,7 +273,7 @@ describe('AxiosHttpDataService', () => {
         .post('/version')
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpPostCall('/version', {});
 
       expect(response.status).to.be.equal(responseStatus);
@@ -291,7 +291,7 @@ describe('AxiosHttpDataService', () => {
         .post('/version')
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpPostCall('/version', {});
 
       expect(response.status).to.be.equal(responseStatus);
@@ -318,7 +318,7 @@ describe('AxiosHttpDataService', () => {
           name: 'Error'
         });
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
       const response = await axiosHttp.makeHttpPostCall('/version', {});
 
       expect(response.status).to.be.equal(responseStatus);
@@ -337,7 +337,7 @@ describe('AxiosHttpDataService', () => {
         .delay(timeoutDelay)
         .reply(StatusCodes.OK, 'Operation Success');
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
 
       const headers = {} as IHeaders;
       const queryParams = {} as IQueryParams;
@@ -372,7 +372,7 @@ describe('AxiosHttpDataService', () => {
         .once()
         .reply(responseStatus, responseBody);
 
-      const axiosHttp = new AxiosHttpDataService(Axios);
+      const axiosHttp = new AxiosHttpDataService(axios);
 
       const headers = {} as IHeaders;
       const queryParams = {} as IQueryParams;
