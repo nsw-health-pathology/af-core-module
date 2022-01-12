@@ -85,7 +85,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
    * @param queryParams Any query Params to send
    * @param headers any HTTP Headers to send
    * @param timeout The number of milliseconds that an API request should wait before timing out.
-   * @param retries The number of times to retry the operation, if a timeout is received.
+   * @param retries The number of times to retry the operation, if a specified response code (or a timeout) is received.
+   * @param retryStatusCodes A list of the response status codes that should trigger a retry.
    * @param axiosRequestCallFn The axios operation function
    */
   private async axiosHttpCall<K>(
@@ -94,6 +95,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     headers: IHeaders,
     timeout: number,
     retries: number,
+    retryStatusCodes: string[],
     axiosRequestCallFn: (fnUrl: string, fnRequestConfig: AxiosRequestConfig) => Promise<AxiosResponse<K>>
   ): Promise<IApiResponse<K>> {
 
@@ -113,6 +115,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       timeout
     };
 
+    let lastKnownApiResponse: IApiResponse<unknown> | undefined;
     let lastKnownApiErrorResponse: IApiResponse<unknown> | undefined;
 
     for (let attempt = 0; attempt <= retries; attempt++) {
@@ -125,6 +128,19 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
           status: response.status,
           headers: response.headers as IHeaders
         };
+
+        lastKnownApiResponse = apiResponse;
+
+        // Check the response status to see if we need to retry.
+        const retryStatusFound = retryStatusCodes.find(statusCode => {
+          const responseStatusCode = response.status.toString();
+          const codeRegex = new RegExp(statusCode);
+          return statusCode === responseStatusCode || codeRegex.test(responseStatusCode);
+        });
+
+        if (retryStatusFound) {
+          continue;
+        }
 
         return apiResponse;
 
@@ -175,6 +191,6 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return lastKnownApiErrorResponse as IApiResponse<any>;
+    return lastKnownApiResponse as IApiResponse<any> || lastKnownApiErrorResponse as IApiResponse<any>;
   }
 }
