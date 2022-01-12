@@ -24,7 +24,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     headers: IHeaders = {},
     queryParams: IQueryParams = {},
     timeout = this.defaultTimeout,
-    retries = this.defaultRetries
+    retries = this.defaultRetries,
+    retryStatusCodes: string[] = []
   ): Promise<IApiResponse<K>> {
 
     const getCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
@@ -34,7 +35,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       );
     };
 
-    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, getCall);
+    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, retryStatusCodes, getCall);
   }
 
   /** Make a HTTP call with PUT HTTP method */
@@ -43,7 +44,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     payload: T,
     headers: IHeaders = {},
     timeout = this.defaultTimeout,
-    retries = this.defaultRetries
+    retries = this.defaultRetries,
+    retryStatusCodes: string[] = []
   ): Promise<IApiResponse<K>> {
 
     const putCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
@@ -54,7 +56,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       );
     };
 
-    return this.axiosHttpCall(url, {}, headers, timeout, retries, putCall);
+    return this.axiosHttpCall(url, {}, headers, timeout, retries, retryStatusCodes, putCall);
   }
 
   /** Make a HTTP call with POST HTTP method */
@@ -64,7 +66,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     headers: IHeaders = {},
     queryParams: IQueryParams = {},
     timeout = this.defaultTimeout,
-    retries = this.defaultRetries
+    retries = this.defaultRetries,
+    retryStatusCodes: string[] = []
   ): Promise<IApiResponse<K>> {
 
     const postCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
@@ -75,7 +78,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       );
     };
 
-    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, postCall);
+    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, retryStatusCodes, postCall);
   }
 
   /**

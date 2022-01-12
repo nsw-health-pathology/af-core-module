@@ -11,7 +11,8 @@ export abstract class AbstractHttpDataService {
     headers: IHeaders,
     queryParams: IQueryParams,
     timeout?: number,
-    retries?: number): Promise<IApiResponse<K>>;
+    retries?: number,
+    retryStatusCodes?: string[]): Promise<IApiResponse<K>>;
 
   /** Make a HTTP call with PUT HTTP method */
   public abstract makeHttpPutCall<T, K = T>(
@@ -19,7 +20,8 @@ export abstract class AbstractHttpDataService {
     payload: T,
     headers: IHeaders,
     timeout?: number,
-    retries?: number): Promise<IApiResponse<K>>;
+    retries?: number,
+    retryStatusCodes?: string[]): Promise<IApiResponse<K>>;
 
   /** Make a HTTP call with POST HTTP method */
   public abstract makeHttpPostCall<T, K = T>(
@@ -28,5 +30,6 @@ export abstract class AbstractHttpDataService {
     headers: IHeaders,
     queryParams: IQueryParams,
     timeout?: number,
-    retries?: number): Promise<IApiResponse<K>>;
+    retries?: number,
+    retryStatusCodes?: string[]): Promise<IApiResponse<K>>;
 }
