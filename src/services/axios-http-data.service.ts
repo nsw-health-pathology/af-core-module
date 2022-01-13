@@ -123,7 +123,6 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
-
         const response = await axiosRequestCallFn(url, requestConfig);
 
         const apiResponse: IApiResponse<K> = {
@@ -167,13 +166,20 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
           headers: e.response?.headers as IHeaders
         };
 
+        // Check the response status to see if we need to retry.
+        const retryStatusFound = retryStatusCodes.find(statusCode => {
+          const responseStatusCode = e.response?.status.toString() || '';
+          const codeRegex = new RegExp(statusCode);
+          return statusCode === responseStatusCode || codeRegex.test(responseStatusCode);
+        });
+
         // This regex was derived from testing with the Axios client
         // The first error is based on the Server Response timeout
         // The second error is based on the  HTTP TCP Connection Timeout
         const timeoutRegExp = /^timeout of [0-9]+ms exceeded$/;
         const nodeTimeoutError = /ETIMEDOUT/;
 
-        if (timeoutRegExp.test(errorData.message) || nodeTimeoutError.test(errorData.message)) {
+        if (timeoutRegExp.test(errorData.message) || nodeTimeoutError.test(errorData.message) || retryStatusFound) {
           continue;
         }
 
