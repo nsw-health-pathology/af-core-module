@@ -104,10 +104,13 @@ describe('AxiosHttpDataService', () => {
 
     it('should timeout if no response is received after the specified period', async () => {
 
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
       nock(/.*/)
         .get('/version')
         .delay(timeoutDelay)
-        .reply(StatusCodes.OK, 'Operation Success');
+        .reply(responseStatus, responseBody);
 
       const axiosHttp = new AxiosHttpDataService(axios);
 
@@ -214,6 +217,38 @@ describe('AxiosHttpDataService', () => {
       const timeout = 0;
       const retries = 3;
       const retryStatusCodes = ['429'];
+
+      const response = await axiosHttp.makeHttpGetCall('/version', headers, queryParams, timeout, retries, retryStatusCodes);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
+    it('should retry the api request if the response status code matches the supplied regex value', async () => {
+
+      const createdResponseStatus = StatusCodes.NOT_FOUND;
+      const createdResponseBody = 'Not Found';
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // respond with 201 for the first 2 x calls.
+      nock(/.*/)
+        .get('/version')
+        .twice()
+        .reply(createdResponseStatus, createdResponseBody);
+
+      nock(/.*/)
+        .get('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 0;
+      const retries = 3;
+      const retryStatusCodes = ['40*'];
 
       const response = await axiosHttp.makeHttpGetCall('/version', headers, queryParams, timeout, retries, retryStatusCodes);
 
@@ -316,10 +351,13 @@ describe('AxiosHttpDataService', () => {
 
     it('should timeout if no response is received after the specified period', async () => {
 
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
       nock(/.*/)
         .put('/version')
         .delay(timeoutDelay)
-        .reply(StatusCodes.OK, 'Operation Success');
+        .reply(responseStatus, responseBody);
 
       const axiosHttp = new AxiosHttpDataService(axios);
 
@@ -433,6 +471,38 @@ describe('AxiosHttpDataService', () => {
       expect(response.body).to.be.deep.equal(responseBody);
     });
 
+    it('should retry the api request if the response status code matches the supplied regex value', async () => {
+
+      const createdResponseStatus = StatusCodes.NOT_FOUND;
+      const createdResponseBody = 'Not Found';
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // respond with 201 for the first 2 x calls.
+      nock(/.*/)
+        .put('/version')
+        .twice()
+        .reply(createdResponseStatus, createdResponseBody);
+
+      nock(/.*/)
+        .put('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 0;
+      const retries = 3;
+      const retryStatusCodes = ['40*'];
+
+      const response = await axiosHttp.makeHttpPutCall('/version', {}, headers, timeout, retries, retryStatusCodes);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
   });
 
   describe('makeHttpPostCall', () => {
@@ -528,10 +598,13 @@ describe('AxiosHttpDataService', () => {
 
     it('should timeout if no response is received after the specified period', async () => {
 
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
       nock(/.*/)
         .post('/version')
         .delay(timeoutDelay)
-        .reply(StatusCodes.OK, 'Operation Success');
+        .reply(responseStatus, responseBody);
 
       const axiosHttp = new AxiosHttpDataService(axios);
 
@@ -638,6 +711,38 @@ describe('AxiosHttpDataService', () => {
       const timeout = 0;
       const retries = 3;
       const retryStatusCodes = ['429'];
+
+      const response = await axiosHttp.makeHttpPostCall('/version', {}, headers, queryParams, timeout, retries, retryStatusCodes);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
+    it('should retry the api request if the response status code matches the supplied regex value', async () => {
+
+      const createdResponseStatus = StatusCodes.NOT_FOUND;
+      const createdResponseBody = 'Not Found';
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // respond with 201 for the first 2 x calls.
+      nock(/.*/)
+        .post('/version')
+        .twice()
+        .reply(createdResponseStatus, createdResponseBody);
+
+      nock(/.*/)
+        .post('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 0;
+      const retries = 3;
+      const retryStatusCodes = ['40*'];
 
       const response = await axiosHttp.makeHttpPostCall('/version', {}, headers, queryParams, timeout, retries, retryStatusCodes);
 
