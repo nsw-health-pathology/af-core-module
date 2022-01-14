@@ -53,7 +53,6 @@ describe('AxiosHttpDataService', () => {
       });
     });
 
-
     it('should return internal server error on critical failure', async () => {
 
       const responseStatus = StatusCodes.INTERNAL_SERVER_ERROR;
@@ -130,6 +129,38 @@ describe('AxiosHttpDataService', () => {
       const retries = 3;
 
       const response = await axiosHttp.makeHttpGetCall('/version', headers, queryParams, timeout, retries);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
+    it('should retry the api request if a specified response code is received', async () => {
+
+      const rateLimitResponseStatus = StatusCodes.TOO_MANY_REQUESTS;
+      const rateLimitResponseBody = 'Rate Limited';
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // respond with 429 for the first 2 x calls.
+      nock(/.*/)
+        .get('/version')
+        .twice()
+        .reply(rateLimitResponseStatus, rateLimitResponseBody);
+
+      nock(/.*/)
+        .get('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 0;
+      const retries = 3;
+      const retryStatusCodes = ['429'];
+
+      const response = await axiosHttp.makeHttpGetCall('/version', headers, queryParams, timeout, retries, retryStatusCodes);
 
       expect(response.status).to.be.equal(responseStatus);
       expect(response.body).to.be.deep.equal(responseBody);
@@ -260,6 +291,38 @@ describe('AxiosHttpDataService', () => {
       expect(response.body).to.be.deep.equal(responseBody);
     });
 
+    it('should retry the api request if a specified response code is received', async () => {
+
+      const rateLimitResponseStatus = StatusCodes.TOO_MANY_REQUESTS;
+      const rateLimitResponseBody = 'Rate Limited';
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // respond with 429 for the first 2 x calls.
+      nock(/.*/)
+        .put('/version')
+        .twice()
+        .reply(rateLimitResponseStatus, rateLimitResponseBody);
+
+      nock(/.*/)
+        .put('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 0;
+      const retries = 3;
+      const retryStatusCodes = ['429'];
+
+      const response = await axiosHttp.makeHttpPutCall('/version', {}, headers, timeout, retries, retryStatusCodes);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
   });
 
   describe('makeHttpPostCall', () => {
@@ -380,6 +443,38 @@ describe('AxiosHttpDataService', () => {
       const retries = 3;
 
       const response = await axiosHttp.makeHttpPostCall('/version', {}, headers, queryParams, timeout, retries);
+
+      expect(response.status).to.be.equal(responseStatus);
+      expect(response.body).to.be.deep.equal(responseBody);
+    });
+
+    it('should retry the api request if a specified response code is received', async () => {
+
+      const rateLimitResponseStatus = StatusCodes.TOO_MANY_REQUESTS;
+      const rateLimitResponseBody = 'Rate Limited';
+      const responseStatus = StatusCodes.OK;
+      const responseBody = 'Operation Successful';
+
+      // respond with 429 for the first 2 x calls.
+      nock(/.*/)
+        .post('/version')
+        .twice()
+        .reply(rateLimitResponseStatus, rateLimitResponseBody);
+
+      nock(/.*/)
+        .post('/version')
+        .once()
+        .reply(responseStatus, responseBody);
+
+      const axiosHttp = new AxiosHttpDataService(axios);
+
+      const headers = {} as IHeaders;
+      const queryParams = {} as IQueryParams;
+      const timeout = 0;
+      const retries = 3;
+      const retryStatusCodes = ['429'];
+
+      const response = await axiosHttp.makeHttpPostCall('/version', {}, headers, queryParams, timeout, retries, retryStatusCodes);
 
       expect(response.status).to.be.equal(responseStatus);
       expect(response.body).to.be.deep.equal(responseBody);
