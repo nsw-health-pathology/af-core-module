@@ -24,7 +24,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     headers: IHeaders = {},
     queryParams: IQueryParams = {},
     timeout = this.defaultTimeout,
-    retries = this.defaultRetries
+    retries = this.defaultRetries,
+    retryStatusCodes: string[] = []
   ): Promise<IApiResponse<K>> {
 
     const getCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
@@ -34,7 +35,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       );
     };
 
-    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, getCall);
+    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, retryStatusCodes, getCall);
   }
 
   /** Make a HTTP call with PUT HTTP method */
@@ -43,7 +44,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     payload: T,
     headers: IHeaders = {},
     timeout = this.defaultTimeout,
-    retries = this.defaultRetries
+    retries = this.defaultRetries,
+    retryStatusCodes: string[] = []
   ): Promise<IApiResponse<K>> {
 
     const putCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
@@ -54,7 +56,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       );
     };
 
-    return this.axiosHttpCall(url, {}, headers, timeout, retries, putCall);
+    return this.axiosHttpCall(url, {}, headers, timeout, retries, retryStatusCodes, putCall);
   }
 
   /** Make a HTTP call with POST HTTP method */
@@ -64,7 +66,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     headers: IHeaders = {},
     queryParams: IQueryParams = {},
     timeout = this.defaultTimeout,
-    retries = this.defaultRetries
+    retries = this.defaultRetries,
+    retryStatusCodes: string[] = []
   ): Promise<IApiResponse<K>> {
 
     const postCall = (innerUrl: string, requestConfig: AxiosRequestConfig): Promise<AxiosResponse<K>> => {
@@ -75,7 +78,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       );
     };
 
-    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, postCall);
+    return this.axiosHttpCall(url, queryParams, headers, timeout, retries, retryStatusCodes, postCall);
   }
 
   /**
@@ -85,7 +88,8 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
    * @param queryParams Any query Params to send
    * @param headers any HTTP Headers to send
    * @param timeout The number of milliseconds that an API request should wait before timing out.
-   * @param retries The number of times to retry the operation, if a timeout is received.
+   * @param retries The number of times to retry the operation, if a specified response code (or a timeout) is received.
+   * @param retryStatusCodes A list of the response status codes that should trigger a retry.
    * @param axiosRequestCallFn The axios operation function
    */
   private async axiosHttpCall<K>(
@@ -94,6 +98,7 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     headers: IHeaders,
     timeout: number,
     retries: number,
+    retryStatusCodes: string[],
     axiosRequestCallFn: (fnUrl: string, fnRequestConfig: AxiosRequestConfig) => Promise<AxiosResponse<K>>
   ): Promise<IApiResponse<K>> {
 
@@ -113,11 +118,11 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
       timeout
     };
 
+    let lastKnownApiResponse: IApiResponse<unknown> | undefined;
     let lastKnownApiErrorResponse: IApiResponse<unknown> | undefined;
 
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
-
         const response = await axiosRequestCallFn(url, requestConfig);
 
         const apiResponse: IApiResponse<K> = {
@@ -125,6 +130,19 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
           status: response.status,
           headers: response.headers as IHeaders
         };
+
+        lastKnownApiResponse = apiResponse;
+
+        // Check the response status to see if we need to retry.
+        const retryStatusFound = retryStatusCodes.find(statusCode => {
+          const responseStatusCode = response.status.toString();
+          const codeRegex = new RegExp(statusCode);
+          return statusCode === responseStatusCode || codeRegex.test(responseStatusCode);
+        });
+
+        if (retryStatusFound) {
+          continue;
+        }
 
         return apiResponse;
 
@@ -148,13 +166,20 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
           headers: e.response?.headers as IHeaders
         };
 
+        // Check the response status to see if we need to retry.
+        const retryStatusFound = retryStatusCodes.find(statusCode => {
+          const responseStatusCode = e.response?.status.toString() || '';
+          const codeRegex = new RegExp(statusCode);
+          return statusCode === responseStatusCode || codeRegex.test(responseStatusCode);
+        });
+
         // This regex was derived from testing with the Axios client
         // The first error is based on the Server Response timeout
         // The second error is based on the  HTTP TCP Connection Timeout
         const timeoutRegExp = /^timeout of [0-9]+ms exceeded$/;
         const nodeTimeoutError = /ETIMEDOUT/;
 
-        if (timeoutRegExp.test(errorData.message) || nodeTimeoutError.test(errorData.message)) {
+        if (timeoutRegExp.test(errorData.message) || nodeTimeoutError.test(errorData.message) || retryStatusFound) {
           continue;
         }
 
@@ -175,6 +200,6 @@ export class AxiosHttpDataService extends AbstractHttpDataService {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return lastKnownApiErrorResponse as IApiResponse<any>;
+    return lastKnownApiResponse as IApiResponse<any> || lastKnownApiErrorResponse as IApiResponse<any>;
   }
 }
